@@ -21,10 +21,5 @@ the generateCellPopulation function
 }
 \examples{
 
-weightMatrix(100)
-weightMatrix(100, plot = TRUE)
-weightMatrix(100, type = "triangular", span = 0.1, plot = TRUE)
-weightMatrix(100, type = "block", plot = TRUE)
-weightMatrix(100, type = "harmonic", plot = TRUE)
 
 }
