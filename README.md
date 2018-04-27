@@ -1,4 +1,4 @@
-# DCARS <img src="man/figures/hex.png" align="right"  height="250" width="250"/>
+cellAggregator <img src="man/figures/hex.png" align="right"  height="250" width="250"/>
   ======================================================
 
   CellAggregator
@@ -11,7 +11,7 @@ Overview
 Installation
 --------
 
-  ```r
+```r
 # Install the development version from GitHub:
 # install.packages("devtools")
 devtools::install_github("shazanfar/cellAggregator")
