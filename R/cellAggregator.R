@@ -8,11 +8,6 @@
 
 #' @examples
 #'
-#' weightMatrix(100)
-#' weightMatrix(100, plot = TRUE)
-#' weightMatrix(100, type = "triangular", span = 0.1, plot = TRUE)
-#' weightMatrix(100, type = "block", plot = TRUE)
-#' weightMatrix(100, type = "harmonic", plot = TRUE)
 #'
 #' @export
 
@@ -26,6 +21,7 @@ generateCellPopulation = function(numCells, numProtsPerCell, plot = TRUE) {
   # numProtsPerCell = rbind(c(5,2,4),c(5,5,1))
 
   require(reshape)
+  require(igraph)
 
   N_cellpop = length(numCells)
   N_prot = ncol(numProtsPerCell)
@@ -84,9 +80,24 @@ generateCellPopulation = function(numCells, numProtsPerCell, plot = TRUE) {
   return(proteinGraph)
 }
 
+
+#' the proteinGraphToCellGraph function
+#'
+#' @title proteinGraphToCellGraph
+#' @param proteinGraph is an igraph object specifying the protein-protein bindings
+#' @param forPlotting optimise the igraph object for plotting (default TRUE, can be set to FALSE for speed)
+#' @return \code{igraph} cellGraph object network of cell-cell bindings
+
+#' @examples
+#'
+#'
+#' @export
+
 proteinGraphToCellGraph = function(proteinGraph, forPlotting = TRUE) {
   # this function also includes stylistic things, so that you
   # can just run plot(cellGraph)
+
+  require(igraph)
 
   numMap = as.numeric(factor(unique(V(proteinGraph)$cellnames,
                                     levels = unique(V(proteinGraph)$cellnames))))
@@ -127,15 +138,50 @@ proteinGraphToCellGraph = function(proteinGraph, forPlotting = TRUE) {
   return(cellGraph)
 }
 
+#' the getproteinStatus function
+#'
+#' @title getproteinStatus
+#' @param proteinGraph is an igraph object specifying the protein-protein bindings
+#' @return \code{vector} character vector of "Bound" or "Unbound"
+#' @examples
+#'
+#'
+#' @export
+
 getproteinStatus = function(proteinGraph) {
   proteinStatus = ifelse(degree(proteinGraph)>0,"Bound","Unbound")
   # names(proteinStatus = V(proteinGraph)$names)
   return(proteinStatus)
 }
 
+
+#' the add function
+#'
+#' @title add
+#' @param x objects to be added
+#' @return added objects
+#' @examples
+#'
+#'
+#' @export
+
 add <- function(x) Reduce("+", x)
 
+#' the speedDateCells function
+#'
+#' @title speedDateCells
+#' @param cellGraph is an igraph object specifying the cell-cell bindings
+#' @return \code{matrix} a set of cell pairs which should speed date
+
+#' @examples
+#'
+#'
+#' @export
+
 speedDateCells = function(cellGraph) {
+
+  require(igraph)
+
   # input is cellGraph taken from proteinGraphToCellGraph()
   # output is a pairing of cells
   # g = graph.adjacency(cellNetwork,mode="undirected")
@@ -169,6 +215,23 @@ speedDateCells = function(cellGraph) {
   return(speedDate)
 }
 
+
+
+#' the bindProteins function
+#'
+#' @title bindProteins
+#' @param proteinGraph is an igraph object specifying the protein-protein bindings
+#' @param speedDate is the matrix of cells that should speed date
+#' @param bindingAffinity is the matrix of binding affinities for the different proteins
+#' @param propSpeedDating proportion of speed dating pairs that should actually bind
+#' @param bindingLength number of timesteps in which the highest affinity proteins should bind
+#' @return \code{igraph} a proteinGraph object with new protein-protein bindings specified
+
+#' @examples
+#'
+#'
+#' @export
+
 bindProteins = function(proteinGraph,
                         speedDate,
                         bindingAffinity,
@@ -179,6 +242,8 @@ bindProteins = function(proteinGraph,
   # set length of time depending on the protein and its affinity value
   # do not allow all speedDating cells to bind at once
   # can lead to weird oscillatory behaviour
+
+  require(igraph)
 
   proteinStatus = getproteinStatus(proteinGraph)
 
@@ -214,13 +279,43 @@ bindProteins = function(proteinGraph,
 
 }
 
+
+#' the bindProteins function
+#'
+#' @title bindProteins
+#' @param proteinGraph is an igraph object specifying the protein-protein bindings
+#' @return \code{igraph} a proteinGraph object with a countdown on the number of timesteps remaining
+
+#' @examples
+#'
+#'
+#' @export
+
 countDown = function(proteinGraph) {
+
+  require(igraph)
+
   E(proteinGraph)$time <- E(proteinGraph)$time - 1
   proteinGraph = delete.edges(proteinGraph, which(E(proteinGraph)$time == 0))
   return(proteinGraph)
 }
 
+
+#' the mixingIndex function
+#'
+#' @title mixingIndex
+#' @param proteinGraph is an igraph object specifying the protein-protein bindings (only one of proteinGraph or cellGraph should be specified)
+#' @param cellGraph is an igraph object specifying the cell-cell bindings (only one of proteinGraph or cellGraph should be specified)
+#' @return \code{list} object containing the t-index and tabulation of number of edges between each pair of proteins
+
+#' @examples
+#'
+#'
+#' @export
+
 mixingIndex = function(proteinGraph = NULL, cellGraph = NULL) {
+
+  require(igraph)
 
   if (is.null(cellGraph)) cellGraph = proteinGraphToCellGraph(proteinGraph)
 
@@ -239,7 +334,46 @@ mixingIndex = function(proteinGraph = NULL, cellGraph = NULL) {
               tabulation = tabulation))
 }
 
-# the main workhorse function
+
+#' the cellAggregator function
+#'
+#' @title cellAggregator
+#' @param numCells vector of the number of cells per cell population
+#' @param numProtsPerCell matrix (number of cell populations x number of protein types) specifying number of proteins per cell
+#' @param bindingAffinity matrix of binding affinities between proteins (should be symmetric matrix)
+#' @param timesteps (default 100) number of timesteps
+#' @param burnIn (default 0.75) consider the last burnIn proportion of timesteps for index calculation
+#' @param verbose (default TRUE) print messages
+#' @param includeListOfGraphs (default TRUE) include list of graphs in results object
+#' @param plot (default FALSE) if TRUE prints a breakdown of the input parameters
+#' @param ... arguments go to bindProteins()
+#' @param cellGraph is an igraph object specifying the cell-cell bindings (only one of proteinGraph or cellGraph should be specified)
+#' @return \code{list} cellAggregationResult object containing the input parameters: numCells, numProtsPerCell, bindingAffinity, timesteps, burnIn, verbose, includeListOfGraphs; and output objects: listofCellGraphs (list of cell graphs per timestep), listofProteinGraphs (list of protein graphs per timestep), listoftIndex (list of t index per timestep), listofTabulation (list of tabulation of proteins per timestep), and t_index (final t index summary value across entire simulation).
+
+#' @examples
+#'
+#' numCells = c(25,25)
+#' numProtsPerCell = rbind(c(5,0,0),c(5,5,5))
+#' bindingAffinity = cbind(c(1,0,0), c(0,1,0), c(0,0,1))
+#'
+#' cellAggregationResult = cellAggregator(
+#'  numCells,
+#'  numProtsPerCell,
+#'  bindingAffinity,
+#'  timesteps = 100,
+#'  burnIn = 0.75,
+#'  verbose = TRUE,
+#'  includeListOfGraphs = TRUE,
+#'  plot = TRUE
+#' )
+#'
+#' cellAggregationResult$t_index
+#' unlist(cellAggregationResult$listoftIndex)
+#' cellAggregationBarplot(cellAggregationResult)
+#'
+#' @export
+
+
 cellAggregator <- function(
   numCells,
   numProtsPerCell,
@@ -250,6 +384,8 @@ cellAggregator <- function(
   includeListOfGraphs = TRUE,
   plot = FALSE, ...
 ) {
+
+  require(igraph)
 
   # ... arguments go to bindProteins
 
@@ -322,11 +458,43 @@ cellAggregator <- function(
   return(cellAggregationResult)
 }
 
-# interpreting results and graphs
+
+
+
+#' the cellAggregationBarplot function
+#'
+#' @title cellAggregationBarplot
+#' @param cellAggregationResult result object obtained from running cellAggregator()
+#' @return \code{ggplot} ggplot object of barplot of number of edges of each type per timestep
+
+#' @examples
+#'
+#' numCells = c(25,25)
+#' numProtsPerCell = rbind(c(5,0,0),c(5,5,5))
+#' bindingAffinity = cbind(c(1,0,0), c(0,1,0), c(0,0,1))
+#'
+#' cellAggregationResult = cellAggregator(
+#'  numCells,
+#'  numProtsPerCell,
+#'  bindingAffinity,
+#'  timesteps = 100,
+#'  burnIn = 0.75,
+#'  verbose = TRUE,
+#'  includeListOfGraphs = TRUE,
+#'  plot = TRUE
+#' )
+#'
+#' cellAggregationResult$t_index
+#' unlist(cellAggregationResult$listoftIndex)
+#' cellAggregationBarplot(cellAggregationResult)
+#'
+#' @export
 
 cellAggregationBarplot = function(cellAggregationResult) {
 
-  cellGraph = cellAggregationResult$listofCellGraphs[[100]]
+  require(igraph)
+
+  cellGraph = cellAggregationResult$listofCellGraphs[[length(cellAggregationResult$listofCellGraphs)]]
 
   pal <- c("#21D921", "#D92121", "#2121D9", "#FFFF4D", "#FF9326")
   names(pal)[1:length(unique(V(cellGraph)$cellPopulation))] <- unique(V(cellGraph)$cellPopulation)
@@ -357,54 +525,3 @@ cellAggregationBarplot = function(cellAggregationResult) {
     theme(legend.position = "bottom")
   g
 }
-
-
-
-
-
-
-# examples
-# # input values (can change)
-# # numCells
-# # numProtsPerCell
-# # bindingAffinity
-#
-# # one scenario, 3 populations and 3 proteins
-# numCells = c(25,25,25)
-# numProtsPerCell = rbind(c(5,5,5),c(5,5,5), c(5,5,5))
-# bindingAffinity = cbind(c(1,0,0), c(0,1,0), c(0,0,1))
-#
-# # another scenario, 2 populations and 3 proteins
-# numCells = c(25,25)
-# numProtsPerCell = rbind(c(5,0,0),c(5,5,5))
-# bindingAffinity = cbind(c(1,0,0), c(0,1,0), c(0,0,1))
-#
-# cellAggregationResult = cellAggregator(
-#   numCells,
-#   numProtsPerCell,
-#   bindingAffinity,
-#   timesteps = 100,
-#   burnIn = 0.75,
-#   verbose = TRUE,
-#   includeListOfGraphs = TRUE,
-#   plot = TRUE
-# )
-#
-# cellAggregationResult$t_index
-# unlist(cellAggregationResult$listoftIndex)
-# cellAggregationBarplot(cellAggregationResult)
-
-
-# cellAggregator functions
-# last updated 25 April 2018
-
-# these functions are for the generalised version of the cellAggregator R package
-# this can work for any number of proteins with any number of cross-binding affinities.
-# additionally any cell can contain any of these proteins in it
-
-# the main product that comes from this is the protein-level network (igraph)
-# and the corresponding cell-level network (from the cell-protein mapping)
-
-# library(igraph)
-# library(reshape)
-# library(ggplot2)
