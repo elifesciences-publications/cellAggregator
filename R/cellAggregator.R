@@ -1,5 +1,3 @@
-#' roxygen2::roxygenise()
-
 #' the generateCellPopulation function
 #'
 #' @title generateCellPopulation
@@ -531,3 +529,5 @@ cellAggregationBarplot = function(cellAggregationResult) {
     theme(legend.position = "bottom")
   g
 }
+
+# roxygen2::roxygenise()

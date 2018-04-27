@@ -17,7 +17,6 @@ generateCellPopulation(numCells, numProtsPerCell, plot = TRUE)
 \code{igraph} output of this function is the igraph network object for protein network, without any edges
 }
 \description{
-roxygen2::roxygenise()
 the generateCellPopulation function
 }
 \examples{
