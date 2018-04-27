@@ -529,5 +529,3 @@ cellAggregationBarplot = function(cellAggregationResult) {
     theme(legend.position = "bottom")
   g
 }
-
-# roxygen2::roxygenise()
