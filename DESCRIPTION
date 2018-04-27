@@ -13,3 +13,4 @@ Imports:
     igraph,
     reshape,
     ggplot2
+RoxygenNote: 6.0.1

@@ -1,18 +1,3 @@
-# cellAggregator functions
-# last updated 25 April 2018
-
-# these functions are for the generalised version of the cellAggregator R package
-# this can work for any number of proteins with any number of cross-binding affinities.
-# additionally any cell can contain any of these proteins in it
-
-# the main product that comes from this is the protein-level network (igraph)
-# and the corresponding cell-level network (from the cell-protein mapping)
-
-# library(igraph)
-# library(reshape)
-# library(ggplot2)
-
-
 #' the generateCellPopulation function
 #'
 #' @title generateCellPopulation
@@ -39,6 +24,8 @@ generateCellPopulation = function(numCells, numProtsPerCell, plot = TRUE) {
   # temproary
   # numCells = c(20,20)
   # numProtsPerCell = rbind(c(5,2,4),c(5,5,1))
+
+  require(reshape)
 
   N_cellpop = length(numCells)
   N_prot = ncol(numProtsPerCell)
@@ -406,3 +393,18 @@ cellAggregationBarplot = function(cellAggregationResult) {
 # cellAggregationResult$t_index
 # unlist(cellAggregationResult$listoftIndex)
 # cellAggregationBarplot(cellAggregationResult)
+
+
+# cellAggregator functions
+# last updated 25 April 2018
+
+# these functions are for the generalised version of the cellAggregator R package
+# this can work for any number of proteins with any number of cross-binding affinities.
+# additionally any cell can contain any of these proteins in it
+
+# the main product that comes from this is the protein-level network (igraph)
+# and the corresponding cell-level network (from the cell-protein mapping)
+
+# library(igraph)
+# library(reshape)
+# library(ggplot2)
