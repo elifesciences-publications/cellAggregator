@@ -514,7 +514,7 @@ cellAggregationBarplot = function(cellAggregationResult) {
   tableOfEdges$col = apply(tableOfEdges[4:5],1,function(x){
     colorRampPalette(c(pal[x[1]],pal[x[2]]))(3)[2]
   })
-  tableOfEdges$cellPops = factor(tableOfEdges$cellPops, levels = tableOfEdges$cellPops)
+  tableOfEdges$cellPops = factor(tableOfEdges$cellPops, levels = unique(tableOfEdges$cellPops))
 
   colpal = unique(tableOfEdges[,c(2,6)])
   colpallette = colpal[,2]
