@@ -7,8 +7,8 @@
 #' @param numProtsPerCell is a N_cellpop x N_prot matrix containing the number of each type of protein appearing in each cellpop (rows are cell populations and columns are proteins).
 #' @param plot logical if you should plot the cell information
 #' @return \code{igraph} output of this function is the igraph network object for protein network, without any edges
-
 #' @examples
+#'
 #' numCells = c(25,25,25)
 #' numProtsPerCell = rbind(c(5,5,5),c(5,5,5), c(5,5,5))
 #' proteinGraph = generateCellPopulation(numCells,numProtsPerCell)
