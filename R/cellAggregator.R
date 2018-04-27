@@ -1,5 +1,5 @@
 # cellAggregator functions
-# 25 April 2018
+# last updated 25 April 2018
 
 # these functions are for the generalised version of the cellAggregator R package
 # this can work for any number of proteins with any number of cross-binding affinities.
@@ -8,9 +8,29 @@
 # the main product that comes from this is the protein-level network (igraph)
 # and the corresponding cell-level network (from the cell-protein mapping)
 
-library(igraph)
-library(reshape)
-library(ggplot2)
+# library(igraph)
+# library(reshape)
+# library(ggplot2)
+
+
+#' the weightMatrix function
+#'
+#' @title weightMatrix
+#' @param n the number of samples, same as number of columns of data
+#' @param type one of "harmonic", "triangular" or "block"
+#' @param span proportion of samples to include on either side, default is 0.5
+#' @param plot if TRUE, a heatmap of weight matrix will be generated
+#' @return \code{matrix} an n*n matrix is generated corresponding to the weights for each sample
+
+#' @examples
+#'
+#' weightMatrix(100)
+#' weightMatrix(100, plot = TRUE)
+#' weightMatrix(100, type = "triangular", span = 0.1, plot = TRUE)
+#' weightMatrix(100, type = "block", plot = TRUE)
+#' weightMatrix(100, type = "harmonic", plot = TRUE)
+#'
+#' @export
 
 generateCellPopulation = function(numCells, numProtsPerCell, plot = TRUE) {
   # numCells is a vector of length N_cellpop containing the number of cells each should contain
