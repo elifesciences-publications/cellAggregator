@@ -13,14 +13,13 @@
 # library(ggplot2)
 
 
-#' the weightMatrix function
+#' the generateCellPopulation function
 #'
-#' @title weightMatrix
-#' @param n the number of samples, same as number of columns of data
-#' @param type one of "harmonic", "triangular" or "block"
-#' @param span proportion of samples to include on either side, default is 0.5
-#' @param plot if TRUE, a heatmap of weight matrix will be generated
-#' @return \code{matrix} an n*n matrix is generated corresponding to the weights for each sample
+#' @title generateCellPopulation
+#' @param numCells is a vector of length N_cellpop containing the number of cells each should contain
+#' @param numProtsPerCell is a N_cellpop x N_prot matrix containing the number of each type of protein appearing in each cellpop (rows are cell populations and columns are proteins).
+#' @param plot logical if you should plot the cell information
+#' @return \code{igraph} output of this function is the igraph network object for protein network, without any edges
 
 #' @examples
 #'
@@ -77,6 +76,8 @@ generateCellPopulation = function(numCells, numProtsPerCell, plot = TRUE) {
   # rownames(proteinNodes) <- apply(proteinNodes,1,function(x)paste0(x[1],"_",x[3]))
 
   if (plot) {
+    require(ggplot2)
+
     proteinNodesDF = as.data.frame(proteinNodes)
     g = ggplot(proteinNodesDF,aes(x = protein, fill = cellPopulation)) + geom_bar(position="dodge") +
       theme_minimal() +
