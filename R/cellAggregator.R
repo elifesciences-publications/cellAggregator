@@ -401,7 +401,7 @@ cellAggregator <- function(
   listofTabulation = list()
 
   # initialise
-  proteinGraph = generateCellPopulation(numCells,numProtsPerCell)
+  proteinGraph = generateCellPopulation(numCells,numProtsPerCell, ...)
 
   # ensure bindingAffinity and protein names match
   rownames(bindingAffinity) = colnames(bindingAffinity) = unique(V(proteinGraph)$protein)

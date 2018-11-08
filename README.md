@@ -1,12 +1,16 @@
 cellAggregator <img src="man/figures/hex.png" align="right"  height="250" width="250"/>
   ======================================================
 
-  CellAggregator
-
 Overview
 --------
 
-  **cellAggregator** is a network method that simulates cell-cell aggregation assays
+  **cellAggregator** is a network method that simulates cell-cell aggregation assays. cellAggregator takes user input of the number of proteins on the surface of each of the cells in disticnt populations, and simulates cell-cell adhesion according to a Markov Chain. Key metrics like overall population mixing are measured at each step and for the overall scenario.  
+  
+  Below is an animation of two cell populations with different proteins on the surface of the green and red cell populations. 
+  
+<img src="man/figures/animation.gif" align="right"  height="250" width="1000"/>
+
+--------
 
 Installation
 --------
