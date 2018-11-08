@@ -8,7 +8,7 @@ Overview
   
   Below is an animation of two cell populations with different proteins on the surface of the green and red cell populations.  
   
-<img src="man/figures/animation.gif" align="right"  height="400" width="1200"/>
+<img src="man/figures/animation.gif" align="right"  height="300" width="1000"/>
 
 --------
 
