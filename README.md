@@ -7,6 +7,12 @@ Overview
 --------
 
   **cellAggregator** is a network method that simulates cell-cell aggregation assays
+  
+--------
+  
+<img src="man/figures/animation.gif" align="right"  height="250" width="1000"/>
+
+--------
 
 Installation
 --------
